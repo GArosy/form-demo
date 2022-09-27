@@ -1,10 +1,16 @@
 <template>
   <div>
-    <common-table :tableData="formData" :tableLabel="tableLabel"
-    @edit="handelEdit"
-    @delete="handelDelete"
+    <common-table
+      :tableData="formData"
+      :tableLabel="tableLabel"
+      @edit="handelEdit"
+      @delete="handelDelete"
     ></common-table>
-    <el-dialog title="Add" :visible.sync="dialogVisible" width="60vw">
+    <el-dialog
+      :title="isEdit ? 'Edit' : 'Add'"
+      :visible.sync="dialogVisible"
+      width="60vw"
+    >
       <common-form
         :formLabel="formLabel"
         :formContent="formContent"
@@ -22,12 +28,15 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 import CommonTable from "@/components/CommonTable.vue";
 import CommonForm from "@/components/CommonForm.vue";
+import store from "@/store";
 export default {
   data() {
     return {
       dialogVisible: false,
+      isEdit: false,
       formLabel: [
         {
           model: "name",
@@ -81,6 +90,7 @@ export default {
         },
       ],
       formContent: {
+        id: "",
         name: "",
         justification: "",
         isOpen: "No",
@@ -131,7 +141,7 @@ export default {
         {
           prop: "member5",
           label: "Project Member 5",
-        }
+        },
       ],
     };
   },
@@ -141,25 +151,32 @@ export default {
   },
   methods: {
     confirm() {
-      this.$store.commit("confirmForm", this.formContent);
+      if (!this.isEdit) {
+        this.$store.commit("confirmItem", this.formContent);
+      } else {
+        this.$store.commit("editItem", this.formContent);
+      }
       this.dialogVisible = false;
     },
     handleAdd() {
-      this.formContent = {isOpen: "No"}
+      this.isEdit = false;
+      this.formContent = { isOpen: "No", id: uuidv4() };
       this.dialogVisible = true;
     },
     handelDelete(row) {
-      this.$store.commit('deleteItem', row)
+      this.$store.commit("deleteItem", row);
     },
     handelEdit(row) {
-      console.log(row);
-    }
+      this.isEdit = true;
+      this.formContent = row;
+      this.dialogVisible = true;
+    },
   },
   computed: {
     formData() {
       return this.$store.state.Form.formData;
     },
-  },
+  }
 };
 </script>
 

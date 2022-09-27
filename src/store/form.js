@@ -2,6 +2,7 @@ export default {
   state: {
     formData: [
       {
+        id: "",
         name: "Mobile Expense Process",
         justification: "Make the approval process ore easier",
         isOpen: "No",
@@ -16,15 +17,20 @@ export default {
     ],
   },
   mutations: {
-    confirmForm(state, data) {
-      state.formData.push(data)
+    confirmItem(state, data) {
+      state.formData.push(data);
     },
     deleteItem(state, data) {
-      state.formData.forEach((element, index) => {
-        if (element === data) {
-          state.formData.splice(index - 1, 1)
-        }
-      });
-    }
+      const index = state.formData.findIndex(
+        (element) => element.id === data.id
+      );
+      state.formData.splice(index, 1);
+    },
+    editItem(state, data) {
+      const index = state.formData.findIndex(
+        (element) => element.id === data.id
+      );
+      state.formData[index] = data;
+    },
   },
 };

@@ -17,7 +17,7 @@
 <script>
 import CommonAside from "@/components/CommonAside.vue";
 export default {
-  name: "home",
+  name: "mainpage",
   components: {
     CommonAside,
   },
